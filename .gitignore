@@ -1,3 +1,6 @@
 FlappyDuino/Temp/
 *.sln
 FlappyDuino/Library/
+*.csproj
+FlappyDuino/.vs/
+FlappyDuino/obj/
