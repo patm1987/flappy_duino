@@ -4,3 +4,4 @@ FlappyDuino/Library/
 *.csproj
 FlappyDuino/.vs/
 FlappyDuino/obj/
+websocket_server/.idea/
