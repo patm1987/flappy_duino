@@ -11,30 +11,31 @@ clients = []
 
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE)
 
+loop = asyncio.get_event_loop()
 
-@asyncio.coroutine
+
 async def serial_server(websocket, path):
     clients.append(websocket)
+    print("{} connected".format(websocket))
     try:
         while True:
             message = await websocket.recv()
             print("Received {}".format(message))
     finally:
+        print("{} disconnected".format(websocket))
         clients.remove(websocket)
 
+async def send_message(message):
+    for client in clients:
+        await client.send(message)
 
-def read_serial():
+async def read_serial():
     while ser.isOpen():
-        print("Received: {}".format(ser.readline()))
+        message = await loop.run_in_executor(None, ser.readline)
+        await send_message(message)
 
-
-thread = Thread(target=read_serial)
-thread.start()
-
-loop = asyncio.get_event_loop()
 start_server = websockets.serve(serial_server, port=8765)
 loop.run_until_complete(start_server)
-loop.run_forever()
+loop.run_until_complete(read_serial())
 
 ser.close()
-thread.join()
