@@ -20,9 +20,9 @@ async def serial_server(websocket, path):
     try:
         while True:
             message = await websocket.recv()
-            print("Received {}".format(message))
-    except:
-        pass
+            loop.run_in_executor(None, ser.write, message.encode())
+    except Exception as e:
+        print("Error: {}".format(e))
     finally:
         print("{} disconnected".format(websocket))
         clients.remove(websocket)

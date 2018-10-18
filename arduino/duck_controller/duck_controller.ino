@@ -88,10 +88,8 @@ void parseCharacter(char character)
             blue = (blue * 10) + asciiToIntValue(character);
             break;
         }
-        if (character == '\n') {
-            pixel.setPixelColor(0, pixel.Color(red, green, blue));
-            pixel.show();
-        }
+        pixel.setPixelColor(0, pixel.Color(red, green, blue));
+        pixel.show();
         state = SerialState::WaitingStart;
         break;
     }
