@@ -5,7 +5,11 @@ using WebSocketSharp;
 public class DuckControllerWebsockets : MonoBehaviour
 {
     [SerializeField] private string _address;
+    [SerializeField] private BirdMovement _movement;
+    [SerializeField] private int _flyThreshold = 200;
     private WebSocket _websocket;
+
+    private int _currentFlight = 0;
 
     private void Start()
     {
@@ -14,6 +18,10 @@ public class DuckControllerWebsockets : MonoBehaviour
         _websocket.OnError += HandleError;
         _websocket.OnClose += HandleClose;
         _websocket.Connect();
+    }
+
+    private void Update() {
+        _movement.Flying = _currentFlight > _flyThreshold;
     }
 
     private void OnDestroy()
@@ -27,7 +35,9 @@ public class DuckControllerWebsockets : MonoBehaviour
     private void HandleMessage(object sender, MessageEventArgs e)
     {
         var message = System.Text.ASCIIEncoding.Default.GetString(e.RawData);
-        Debug.Log($"Received {message}");
+        if (message.StartsWith("r:")) {
+            int.TryParse(message.Substring(2), out _currentFlight);
+        }
     }
 
     private void HandleError(object sender, ErrorEventArgs e)
