@@ -5,3 +5,14 @@ FlappyDuino/Library/
 FlappyDuino/.vs/
 FlappyDuino/obj/
 websocket_server/.idea/
+arduino/button_test/.vscode/
+AssetsForDemo/arduino/button_test/.vscode/
+AssetsForDemo/FlappyDuinoDemo/.idea/
+AssetsForDemo/FlappyDuinoDemo/.vs/
+AssetsForDemo/FlappyDuinoDemo/Library/
+AssetsForDemo/websocket_server/.idea/
+AssetsForDemo/FlappyDuinoDemo/obj/
+AssetsForDemo/FlappyDuinoDemo/.vscode/
+AssetsForDemo/websocket_server/.vscode/
+FlappyDuino/.idea/
+websocket_server/.vscode/
