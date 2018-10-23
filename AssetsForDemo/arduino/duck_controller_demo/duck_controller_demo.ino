@@ -36,13 +36,8 @@ void setup()
 void loop()
 {
     int reading = analogRead(analogReadPin);
-    // Serial.print("r:");
     Serial.print("Reading = ")
     Serial.println(reading);
-
-    // while (Serial.available()) {
-    //     parseCharacter(Serial.read());
-    // }
     
     pixel.setPixelColor(0, pixel.Color(reading/4, 255-reading/4, 0));
     pixel.show();
