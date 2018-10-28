@@ -3,7 +3,7 @@
 public class BirdColorController : MonoBehaviour
 {
     [SerializeField] private BirdMovement _birdMovement;
-    [SerializeField] private DuckControllerWebsockets _duckControllerWebsockets;
+    [SerializeField] private WebsocketController _websocketController;
     [SerializeField] private Color _flyingColor = Color.blue;
     [SerializeField] private Color _fallingColor = Color.green;
 
@@ -19,7 +19,6 @@ public class BirdColorController : MonoBehaviour
 
     private void HandleFlying(bool flying)
     {
-        Debug.Log($"Flying now {flying}");
-        _duckControllerWebsockets.SetColor(flying ? _flyingColor : _fallingColor);
+        _websocketController.SetColor(flying ? _flyingColor : _fallingColor);
     }
 }

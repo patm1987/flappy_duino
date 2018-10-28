@@ -35,9 +35,12 @@ public class WebsocketController : MonoBehaviour
 
     void Update()
     {
-        while (_actionQueue.Any())
+        lock (_actionQueue)
         {
-            _actionQueue.Dequeue()();
+            while (_actionQueue.Any())
+            {
+                _actionQueue.Dequeue()();
+            }
         }
     }
 
@@ -58,7 +61,10 @@ public class WebsocketController : MonoBehaviour
             int resistance;
             if (int.TryParse(message.Substring(2), out resistance))
             {
-                _actionQueue.Enqueue(() => OnExceedsThreshold.Invoke(resistance > _threshold));
+                lock (_actionQueue)
+                {
+                    _actionQueue.Enqueue(() => OnExceedsThreshold.Invoke(resistance > _threshold));
+                }
             }
         }
     }

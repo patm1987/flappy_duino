@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using WebSocketSharp;
 
-public class DuckControllerWebsockets : MonoBehaviour
+public class WebsocketController : MonoBehaviour
 {
-    [SerializeField] private string _address;
-    [SerializeField] private BirdMovement _movement;
-    [SerializeField] private int _flyThreshold = 200;
+    [SerializeField] private string _address = "ws://localhost:8765/";
+    [SerializeField] private int _threshold = 500;
     private WebSocket _websocket;
     [SerializeField] private Color _color = Color.white;
 
-    private int _currentFlight = 0;
+    public ExceedsThresholdEvent OnExceedsThreshold = new ExceedsThresholdEvent();
+
+    private readonly Queue<Action> _actionQueue = new Queue<Action>();
 
     private void Awake()
     {
@@ -21,17 +25,23 @@ public class DuckControllerWebsockets : MonoBehaviour
         _websocket.Connect();
     }
 
-    private void Update()
-    {
-        _movement.Flying = _currentFlight > _flyThreshold;
-    }
-
     private void OnDestroy()
     {
         _websocket.OnMessage -= HandleMessage;
         _websocket.OnError -= HandleError;
         _websocket.OnClose -= HandleClose;
         _websocket.Close();
+    }
+
+    void Update()
+    {
+        lock (_actionQueue)
+        {
+            while (_actionQueue.Any())
+            {
+                _actionQueue.Dequeue()();
+            }
+        }
     }
 
     public void SetColor(Color c)
@@ -45,10 +55,17 @@ public class DuckControllerWebsockets : MonoBehaviour
 
     private void HandleMessage(object sender, MessageEventArgs e)
     {
-        var message = System.Text.ASCIIEncoding.Default.GetString(e.RawData);
+        var message = System.Text.Encoding.Default.GetString(e.RawData);
         if (message.StartsWith("r:"))
         {
-            int.TryParse(message.Substring(2), out _currentFlight);
+            int resistance;
+            if (int.TryParse(message.Substring(2), out resistance))
+            {
+                lock (_actionQueue)
+                {
+                    _actionQueue.Enqueue(() => OnExceedsThreshold.Invoke(resistance > _threshold));
+                }
+            }
         }
     }
 
@@ -59,6 +76,11 @@ public class DuckControllerWebsockets : MonoBehaviour
 
     private void HandleClose(object sender, CloseEventArgs e)
     {
-        Debug.Log($"Websocket Closed");
+        Debug.Log("Websocket Closed");
+    }
+
+    [System.Serializable]
+    public class ExceedsThresholdEvent : UnityEvent<bool>
+    {
     }
 }
