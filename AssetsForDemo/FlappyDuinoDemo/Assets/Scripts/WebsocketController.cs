@@ -7,14 +7,14 @@ using WebSocketSharp;
 
 public class WebsocketController : MonoBehaviour
 {
-    [SerializeField] private string _address;
+    [SerializeField] private string _address = "ws://localhost:8765/";
     [SerializeField] private int _threshold = 500;
     private WebSocket _websocket;
     [SerializeField] private Color _color = Color.white;
 
     public ExceedsThresholdEvent OnExceedsThreshold = new ExceedsThresholdEvent();
 
-    private Queue<Action> _actionQueue = new Queue<Action>();
+    private readonly Queue<Action> _actionQueue = new Queue<Action>();
 
     private void Awake()
     {
