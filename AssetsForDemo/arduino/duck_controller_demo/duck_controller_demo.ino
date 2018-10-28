@@ -36,7 +36,7 @@ void setup()
 void loop()
 {
     int reading = analogRead(analogReadPin);
-    Serial.print("Reading = ")
+    Serial.print("Reading = ");
     Serial.println(reading);
     
     pixel.setPixelColor(0, pixel.Color(reading/4, 255-reading/4, 0));
