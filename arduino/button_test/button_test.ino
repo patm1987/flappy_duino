@@ -3,7 +3,6 @@
 const int analogReadPin = 0;
 
 const int pixelPin = 6;
-const int ledPin = 13;
 
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(1, pixelPin, NEO_GRB + NEO_KHZ800);
 
